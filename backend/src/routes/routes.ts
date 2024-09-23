@@ -61,18 +61,15 @@ router.post("/transaction/mock", async (req, res) => {
   if (!model) {
     return res.status(400).json({ message: "Model is required" });
   }
-  try{
-      const transaction = model as Transaction;
-      console.log(transaction);
-  }catch(error:any){
-    return res.status(422).json({ message: "Invalid model format" });
-  }
   try {
     const newTransaction = new TransactionModel(model);
     await newTransaction.save();
     res.status(201).json(newTransaction);
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    if (error instanceof Error && error.name == "ValidationError") {
+      return res.status(422).json({ message: "Unprocessable entity ", stackTrace: error.message });
+    }
+    return res.status(500).json({ message: "Server error", error });
   }
 });
 
