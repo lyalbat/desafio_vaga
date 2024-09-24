@@ -1,12 +1,15 @@
 import express from "express";
-import multer from "multer";
-import { promises as fs } from "fs";
 import { TransactionModel } from "../models/transaction";
+import fs from "fs";
+import path from "path";
+import { bulkInsert } from "../controllers/bulkInsert";
+/*
+import multer from "multer";
+import csv from "csv-parser";
+import { Transaction } from "../interfaces/transaction";*/
 
 const router = express.Router();
-//configuracao para salvar dado em memoria e otimizar o processamento por buffer
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+// const upload = multer({ dest: "uploads/" });
 
 router.get("/healthcheck", (req, res) => {
   res.send("Healthcheck - API is UP!");
@@ -69,58 +72,6 @@ router.get("/transactions", async (req, res) => {
   res.status(200).json(response);
 });
 
-//needs logic
-router.post(
-  "/upload/transactions",
-  upload.single("transactions"),
-  (req, res) => {
-    if (!req.file) {
-      return res.status(400).send("No file uploaded.");
-    }
-
-    const fileBuffer = req.file.buffer;
-    const fileContent = fileBuffer.toString("utf-8");
-
-    console.log("Received file content:", fileContent);
-
-    res.status(200).send(`File received: ${req.file.fieldname}`);
-  }
-);
-
-router.post("/upload", async (req, res) => {
-  const path = req.body.path;
-  if (!path) {
-    return res.status(400).json({ message: "Path is required" });
-  }
-  console.log("this was sent in the request body: ", path);
-  try {
-    console.time("Reading json");
-    const buffer = await fs.readFile(path)
-    const records = JSON.parse(buffer.toString());
-    console.timeEnd("Finished reading json");
-    console.time('Inserting records')
-    TransactionModel.insertMany(records);
-    console.timeEnd('Finished inserting records')
-    res.status(201).json({message: "upload completed"});
-    // process.exit();
-  } catch (e) {
-    if (e instanceof Error) {
-      if (e.name == "ValidationError")
-        return res.status(422).json({
-          message: "Unprocessable entity ",
-          stackTrace: e.message,
-        });
-      if (new RegExp("duplicate key error").test(e.message)) {
-        return res.status(400).json({
-          message: "Bad request",
-        });
-      }
-    }
-
-    return res.status(500).json({ message: "Server error", e });
-  }
-});
-
 router.post("/transaction/mock", async (req, res) => {
   const model = req.body;
   console.log("this was sent in the request body: ", req.body);
@@ -148,6 +99,53 @@ router.post("/transaction/mock", async (req, res) => {
 
     return res.status(500).json({ message: "Server error", error });
   }
+});
+/*
+router.post("/bulk/insert", upload.single("file"), async (req, res) => {
+  let results: Array<Transaction>;
+
+  if (!req.file) return res.status(400).json({ error: "Bad request." });
+  fs.createReadStream(req.file.path)
+    .pipe(csv())
+    .on("data", (data: Transaction) => {
+      const transaction = { ...data };
+      results.push(transaction);
+    })
+    .on("end", async () => {
+      try {
+        await TransactionModel.insertMany(results);
+        res
+          .status(200)
+          .json({ message: "Bulk insert successful", count: results.length });
+      } catch (error) {
+        console.error("Bulk insert error:", error);
+        res.status(500).json({ error: "Failed to insert data" });
+      } finally {
+        if (!req.file)
+          return res.status(404).json({ error: "File not found." });
+        fs.unlinkSync(req.file.path);
+      }
+    })
+    .on("error", (error: any) => {
+      console.error("Error reading file:", error);
+      res.status(500).json({ error: "Failed to read the file" });
+    });
+});*/
+
+router.post("/upload/transactions", (req, res) => {
+  const { file, fileName } = req.body;
+
+  const buffer = Buffer.from(file, "base64");
+  const filePath = path.join(fileName);
+  
+  fs.writeFile(filePath, buffer, (err) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to save file." });
+    }
+    bulkInsert(filePath);
+
+    res.status(200).json({ message: "File uploaded successfully!" });
+  });
 });
 
 export default router;
