@@ -1,9 +1,8 @@
 import express from "express";
-const router = express.Router();
 import multer from "multer";
 import { TransactionModel } from "../models/transaction";
-import { Transaction } from "../interfaces/transaction";
 
+const router = express.Router();
 //configuracao para salvar dado em memoria e otimizar o processamento por buffer
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -13,12 +12,35 @@ router.get("/healthcheck", (req, res) => {
 });
 
 //Mock do banco
-const transactions = Array.from({ length: 100 }, (v, i) => ({
-  id: i + 1,
-  transaction: `Transaction de numero ${i + 1}`,
-}));
+export const transactions = [
+  {
+    id: "76ee118b-60cc-4f69-9689-0c42cdc00d30",
+    nome: "Fernando Abshire DDS",
+    valor: 852211,
+  },
+  {
+    id: "dad0ae86-af79-4e39-bd43-d65c8a7c47e5",
+    nome: "Marshall Yost",
+    valor: 174378,
+  },
+  {
+    id: "def06f7a-67d9-4e63-9a50-c1a6f925cd88",
+    nome: "Shawna Pollich",
+    valor: 392563,
+  },
+  {
+    id: "a5a53ccb-a5ba-4118-8a95-a538bdbd6d48",
+    nome: "Roberto Gerlach-Ziemann",
+    valor: 788778,
+  },
+  {
+    id: "5ef48f0a-62c4-41ad-814e-2610c3d67e98",
+    nome: "Ben Goldner",
+    valor: 272580,
+  },
+];
 
-router.get("/transactions", (req, res) => {
+router.get("/transactions", async (req, res) => {
   const page = req.query.page ? Number(req.query.page as string) : 1;
   const limit = req.query.limit ? Number(req.query.limit as string) : 10;
   const startIndex = (page - 1) * limit;

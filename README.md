@@ -163,8 +163,9 @@ Seu projeto será avaliado de acordo com os seguintes critérios:
   
 
   
-
 Boa sorte!
 
 
 ### Como rodar esta aplicação? 
+
+1. Rode o comando "docker compose up --build" na raiz da aplicação
