@@ -56,8 +56,8 @@ router.post(
 
 router.post("/transaction/mock", async (req, res) => {
   const model = req.body;
-  console.log("this was sent in the request body: ", req.body)
-  
+  console.log("this was sent in the request body: ", req.body);
+
   if (!model) {
     return res.status(400).json({ message: "Model is required" });
   }
@@ -66,9 +66,23 @@ router.post("/transaction/mock", async (req, res) => {
     await newTransaction.save();
     res.status(201).json(newTransaction);
   } catch (error) {
-    if (error instanceof Error && error.name == "ValidationError") {
-      return res.status(422).json({ message: "Unprocessable entity ", stackTrace: error.message });
+    if (error instanceof Error) {
+      if (error.name == "ValidationError")
+        return res
+          .status(422)
+          .json({
+            message: "Unprocessable entity ",
+            stackTrace: error.message,
+          });
+      if (new RegExp("duplicate key error").test(error.message)) {
+        return res
+          .status(400)
+          .json({
+            message: "Bad request"
+          });
+      }
     }
+
     return res.status(500).json({ message: "Server error", error });
   }
 });
