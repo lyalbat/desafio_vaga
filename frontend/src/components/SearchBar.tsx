@@ -1,11 +1,11 @@
 import React from 'react';
+import UploadButton from './UploadButton';
 
 interface SearchBarProps {
   searchField: string;
   searchQuery: string;
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleFieldChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  handleAddTransaction: () => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -13,7 +13,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   searchQuery,
   handleSearchChange,
   handleFieldChange,
-  handleAddTransaction,
 }) => (
   <div className="mb-4 flex space-x-2">
     <select
@@ -34,12 +33,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
       onChange={handleSearchChange}
       className="border rounded-lg p-2 w-full text-gray-600"
     />
-    <button
-      onClick={handleAddTransaction}
-      className="border bg-blue-600 text-white rounded-lg px-4 py-2"
-    >
-      Adicionar Transação
-    </button>
+    <UploadButton/>
+    
   </div>
 );
 

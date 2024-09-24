@@ -4,7 +4,7 @@ import { Transaction } from "../interfaces/transaction";
 
 const ITEMS_PER_PAGE = 2;
 
-export const useTransactions = (currentPage: number) => {
+export const useGetTransactions = (currentPage: number) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 

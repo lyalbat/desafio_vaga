@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { applicationConfig } from "./ApplicationConfig";
-const { MONGODB_URI } = applicationConfig;
+const { MONGODB_URI, COLLECTION_NAME } = applicationConfig;
 
 export const connectDB = async () => {
   try {
@@ -12,3 +12,10 @@ export const connectDB = async () => {
   }
 };
 
+/*
+export async function getCollection() {
+  const client = mongoose.connection;
+  const collection = client.db?.collection(COLLECTION_NAME);
+  return collection;
+}
+*/

@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+import { promises as fs } from "fs";
 import { TransactionModel } from "../models/transaction";
 
 const router = express.Router();
@@ -86,6 +87,40 @@ router.post(
   }
 );
 
+router.post("/upload", async (req, res) => {
+  const path = req.body.path;
+  if (!path) {
+    return res.status(400).json({ message: "Path is required" });
+  }
+  console.log("this was sent in the request body: ", path);
+  try {
+    console.time("Reading json");
+    const buffer = await fs.readFile(path)
+    const records = JSON.parse(buffer.toString());
+    console.timeEnd("Finished reading json");
+    console.time('Inserting records')
+    TransactionModel.insertMany(records);
+    console.timeEnd('Finished inserting records')
+    res.status(201).json({message: "upload completed"});
+    // process.exit();
+  } catch (e) {
+    if (e instanceof Error) {
+      if (e.name == "ValidationError")
+        return res.status(422).json({
+          message: "Unprocessable entity ",
+          stackTrace: e.message,
+        });
+      if (new RegExp("duplicate key error").test(e.message)) {
+        return res.status(400).json({
+          message: "Bad request",
+        });
+      }
+    }
+
+    return res.status(500).json({ message: "Server error", e });
+  }
+});
+
 router.post("/transaction/mock", async (req, res) => {
   const model = req.body;
   console.log("this was sent in the request body: ", req.body);
@@ -100,18 +135,14 @@ router.post("/transaction/mock", async (req, res) => {
   } catch (error) {
     if (error instanceof Error) {
       if (error.name == "ValidationError")
-        return res
-          .status(422)
-          .json({
-            message: "Unprocessable entity ",
-            stackTrace: error.message,
-          });
+        return res.status(422).json({
+          message: "Unprocessable entity ",
+          stackTrace: error.message,
+        });
       if (new RegExp("duplicate key error").test(error.message)) {
-        return res
-          .status(400)
-          .json({
-            message: "Bad request"
-          });
+        return res.status(400).json({
+          message: "Bad request",
+        });
       }
     }
 
