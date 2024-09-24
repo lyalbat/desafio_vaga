@@ -5,14 +5,17 @@ import { useTransactions } from "../hooks/useTransactions";
 import { Transaction } from "../interfaces/transaction";
 
 const Home = () => {
+  const defaultValues = {
+    id: "",
+    nome: "",
+    cpfCnpj: "",
+    data: "00-00-00",
+    valor: 0,
+  }
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchField, setSearchField] = useState("nome");
-  const [newTransaction, setNewTransaction] = useState({
-    id: "",
-    nome: "",
-    valor: 0,
-  });
+  const [newTransaction, setNewTransaction] = useState(defaultValues);
 
   const { transactions, totalPages } = useTransactions(currentPage);
 
@@ -35,7 +38,7 @@ const Home = () => {
   };
 
   const handleAddTransaction = async () => {
-    if (newTransaction.id && newTransaction.nome && newTransaction.valor) {
+    if (newTransaction.id && newTransaction.nome && newTransaction.data && newTransaction.cpfCnpj && newTransaction.valor) {
       /*
       await fetch('/api/transactions', {
         method: 'POST',
@@ -44,7 +47,7 @@ const Home = () => {
       });
       */
 
-      setNewTransaction({ id: "", nome: "", valor: 0 });
+      setNewTransaction(defaultValues);
       // fetchTransactions(currentPage);
     }
   };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchAllTransactions } from "../utils/fetchTransactions";
+import { fetchAllTransactions } from "../utils/transactions";
 import { Transaction } from "../interfaces/transaction";
 
 const ITEMS_PER_PAGE = 2;

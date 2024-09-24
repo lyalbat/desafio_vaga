@@ -19,24 +19,26 @@ const SearchBar: React.FC<SearchBarProps> = ({
     <select
       value={searchField}
       onChange={handleFieldChange}
-      className="border rounded-lg p-2 text-gray-600"
+      className="border rounded-lg py-2 px-2 text-gray-500"
     >
       <option value="nome">Nome</option>
-      <option value="id">ID</option>
+      <option value="cpfCnpj">Documento de identificação</option>
       <option value="valor">Valor</option>
+      <option value="id">ID</option>
+      <option value="data">Data</option>
     </select>
     <input
       type="text"
-      placeholder={`Search by ${searchField}`}
+      placeholder={`Filtre por ${searchField}`}
       value={searchQuery}
       onChange={handleSearchChange}
       className="border rounded-lg p-2 w-full text-gray-600"
     />
     <button
       onClick={handleAddTransaction}
-      className="bg-blue-500 text-white rounded-lg px-4 py-2"
+      className="border bg-blue-600 text-white rounded-lg px-4 py-2"
     >
-      Add Transaction
+      Adicionar Transação
     </button>
   </div>
 );

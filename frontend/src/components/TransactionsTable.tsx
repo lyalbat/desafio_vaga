@@ -20,6 +20,8 @@ const TransactionsTable: React.FC<TransactionTableProps> = ({
         <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
           <th className="py-3 px-6 text-left">ID</th>
           <th className="py-3 px-6 text-left">Nome</th>
+          <th className="py-3 px-6 text-left">Documento de Identificação</th>
+          <th className="py-3 px-6 text-left">Data</th>
           <th className="py-3 px-6 text-left">Valor</th>
         </tr>
       </thead>
@@ -31,6 +33,8 @@ const TransactionsTable: React.FC<TransactionTableProps> = ({
           >
             <td className="py-3 px-6">{transaction.id}</td>
             <td className="py-3 px-6">{transaction.nome}</td>
+            <td className="py-3 px-6">{transaction.cpfCnpj}</td>
+            <td className="py-3 px-6">{transaction.data}</td>
             <td className="py-3 px-6">${transaction.valor.toFixed(2)}</td>
           </tr>
         ))}
