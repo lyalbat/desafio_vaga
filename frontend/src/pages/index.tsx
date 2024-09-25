@@ -4,7 +4,6 @@ import TransactionsTable from "../components/TransactionsTable";
 import { useGetTransactions } from "../hooks/useGetTransactions";
 import { Transaction } from "../interfaces/transaction";
 import UploadButton from "@/components/UploadButton";
-import { applicationConfig } from "@/configuration/ApplicationConfig";
 import { addTransactionsFile } from "@/utils/transactions";
 
 const Home = () => {
@@ -45,21 +44,21 @@ const Home = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    // Read the file as a base64 string
     const reader = new FileReader();
+    console.time("starting to read file")
     reader.readAsDataURL(file);
     reader.onloadend = async () => {
       if (!reader.result) return;
       const base64data = (reader.result as string).split(",")[1];
-      // Prepare the data to send
       const data = {
         file: base64data,
         fileName: file.name,
       };
-
+      console.time("finished reading file")
       try {
+        console.time("started insertion process")
         const response = await addTransactionsFile(data);
-
+        console.time("finished insertion process")
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -75,7 +74,6 @@ const Home = () => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const files = e.target.files;
-    console.log("arquivo presente: ", files);
     if (!files) return;
     setFile(files[0]);
   };

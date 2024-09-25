@@ -1,4 +1,4 @@
-export function formatLineBuffer(line:string){
+export function formatBufferTransaction(line:string){
     const formattedLine = line.split(";")
     if(!formattedLine) return 
     const transaction = {

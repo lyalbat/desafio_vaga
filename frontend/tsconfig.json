@@ -16,6 +16,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../backend/src/utils/formatLineBuffer.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../backend/src/utils/formatBufferTransaction.ts"],
   "exclude": ["node_modules"]
 }

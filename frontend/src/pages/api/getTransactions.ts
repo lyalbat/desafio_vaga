@@ -1,6 +1,7 @@
 import { applicationConfig } from "@/configuration/ApplicationConfig";
 
-async function fetchAllTransactions(page: number, limit: number) {
+async function fetchAllTransactions(page: number, limit: number, filter?: {filterKey: string}) {
+  const queryFilter = filter ? filter : null 
   const url = `${applicationConfig.NEXT_PUBLIC_API_URL}/transactions?page=${page}&limit=${limit}`;
   const response = await fetch(url);
   if (response.status !== 200) {
