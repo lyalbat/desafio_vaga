@@ -9,7 +9,6 @@ async function fetchAllTransactions(page: number, limit: number, filterKey: stri
   }
 
   const data = await response.json();
-  console.log("retorno do fetch: ",data);
   return data;
 }
 
