@@ -9,7 +9,6 @@ import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { applicationConfig } from "@/configuration/ApplicationConfig";
 
 const Home = () => {
-
   const ITEMS_PER_PAGE = applicationConfig.NEXT_ITEMS_PER_PAGE;
   const [file, setFile] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +16,10 @@ const Home = () => {
     transactions: initalData,
     loading,
     totalPages: initialTotal,
-  } = useGetAllTransactions(currentPage);
+  } = useGetAllTransactions(currentPage, ITEMS_PER_PAGE);
+
+  const [totalPages, setTotalPages] = useState(initialTotal);
+
   const {
     filteredData,
     loading: loadingSearch,
@@ -25,6 +27,7 @@ const Home = () => {
     totalPages: totalSearch,
     setFilteredData,
   } = useSearchTransactions(initalData, initialTotal, ITEMS_PER_PAGE);
+
   const [searchQuery, setSearchQuery] = useState({
     filterKey: "nome",
     filterValue: "",
@@ -32,13 +35,10 @@ const Home = () => {
 
   useEffect(() => {
     setFilteredData(initalData);
+    setTotalPages(totalSearch);
   }, [initalData, setFilteredData]);
 
   if (loading || loadingSearch) return <LoadingSkeleton />;
-  //VOLTAR AQUI
-  // if (errorData) return <p>Error: {errorData}</p>;
-  //if (errorSearch) return <p>Error: {errorSearch}</p>;
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery({
       filterKey: searchQuery.filterKey,
@@ -95,7 +95,7 @@ const Home = () => {
     if (!files) return;
     setFile(files[0]);
   };
-  const totalPages = totalSearch ? totalSearch : initialTotal;
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex w-full w-container border border-gray-300 rounded overflow-hidden p-2">

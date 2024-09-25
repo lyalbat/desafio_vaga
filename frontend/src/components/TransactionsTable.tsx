@@ -41,16 +41,28 @@ const TransactionsTable: React.FC<TransactionTableProps> = ({
       </tbody>
     </table>
     <div className="flex justify-center mt-4">
-      {Array.from({ length: totalPages }, (_, index) => (
-        <button
-          key={index + 1}
-          onClick={() => handlePageChange(index + 1)}
-          className={`mx-1 px-3 py-1 rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-        >
-          {index + 1}
-        </button>
-      ))}
-    </div>
+    <button
+      type="button"
+      onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)}
+      className="mx-1 px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300"
+      disabled={currentPage === 1}
+    >
+      Previous Page
+    </button>
+
+    <button
+      type="button"
+      onClick={() =>
+        handlePageChange(
+          currentPage < totalPages ? currentPage + 1 : totalPages
+        )
+      }
+      className="mx-1 px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300"
+      disabled={currentPage === totalPages}
+    >
+      Next Page
+    </button>
+  </div>
   </>
 );
 

@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchAllTransactions } from "../utils/transactions";
 import { Transaction } from "../interfaces/transaction";
 
-const ITEMS_PER_PAGE = 2;
-
-export const useGetAllTransactions = (currentPage: number) => {
+export const useGetAllTransactions = (currentPage: number, ITEMS_PER_PAGE: number) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
