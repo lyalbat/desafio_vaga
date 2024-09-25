@@ -169,3 +169,6 @@ Boa sorte!
 ### Como rodar esta aplicação? 
 
 1. Rode o comando "docker compose up --build" na raiz da aplicação
+2. Para adicionar o arquivo das transações, vá até "http://localhost:3000" e clique no botão onde está escrito "Escolha um arquivo". Logo depois, submita esse arquivo clicando em "Adicione suas transações".
+Obs: Há uma certa lentidão entre a inserção no banco e o display em tela, talvez seja necessário realizar o reload da tela e buscar pelos arquivos na barra de buscas.
+3. Para utilizar a barra de buscas, selecione o seu filtro de interesse e digite o valor equivalente. (Os parâmetros de texto - como nome - aceitam valores aproximados, mas os campos de número aceitam apenas o valor correto)
