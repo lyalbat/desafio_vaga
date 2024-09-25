@@ -40,20 +40,28 @@ router.get("/users", async (req, res) => {
   }
 });
 
-router.post("/upload/transactions", (req, res) => {
-  const { file, fileName } = req.body;
+router.post("/upload/transactions", async (req, res) => {
+  const { fileName } = req.body;
+  if (!fileName) {
+    return res.status(400).json({ error: "File path is required." });
+  }
 
-  const buffer = Buffer.from(file, "base64");
-  const filePath = path.join(fileName);
+  const absolutePath = path.join("/app/public/files", fileName);
 
-  fs.writeFile(filePath, buffer, (err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to save file." });
+  try {
+    const result = await bulkInsertTransactions(absolutePath);
+    if (!result) {
+      return res.status(500).json({ error: "Could not process transactions." });
     }
-    bulkInsertTransactions(filePath);
-
-    res.status(200).json({ message: "File uploaded successfully!" });
-  });
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      count: result.count,
+    });
+  } catch (error) {
+    console.error("Error during bulk insert:", error);
+    return res.status(500).json({ error: "Failed to process transactions." });
+  }
 });
 
 export default router;

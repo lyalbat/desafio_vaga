@@ -5,6 +5,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    volumes:
+      - shared-files:/app/public/files
     ports:
       - "3000:3000"
     depends_on:
@@ -16,6 +18,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
+    volumes:
+      - shared-files:/app/public/files
     environment:
       MONGODB_URI: ${MONGODB_URI}
 
@@ -28,3 +32,4 @@ services:
 
 volumes:
   mongo-data:
+  shared-files:

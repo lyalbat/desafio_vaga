@@ -20,5 +20,11 @@ export const fetchUsersRepository = async (
 };
 
 export const saveBatchUsers = async (users: Array<User>) => {
-  return await UserModel.insertMany(users);
+  try {
+    return await UserModel.insertMany(users, { ordered: false });
+  } catch (error: any) {
+    const duplicatedError = /E11000 duplicate key error collection/;
+    if (duplicatedError.test(error)) return;
+    throw new Error("Failed to insert users. Error: " + error);
+  }
 };

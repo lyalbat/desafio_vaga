@@ -8,6 +8,7 @@ import {
 } from "../repository/transactions";
 import { fetchDataFactory } from "./factory/fetchDataFactory";
 import { BufferUserData, checkUserDuplicatesInBuffer } from "../utils/checkUserDuplicatesInBuffer";
+import { bulkInsertUsers } from "./users";
 
 export const bulkInsertTransactions = async (filePath: string) => {
   let results = new Array();
@@ -29,7 +30,12 @@ export const bulkInsertTransactions = async (filePath: string) => {
   try {
     const saveResult = await saveBatchTransactions(results);
     users.push({ names: userNames, documents: userDocuments });
-    const leanUserList = checkUserDuplicatesInBuffer(users)
+    try{
+      const leanUserList = checkUserDuplicatesInBuffer(users)
+      bulkInsertUsers(leanUserList)
+    }catch(error:any){
+      console.error("User bulk insert error:", error);
+    }
     return {
       message: "Bulk insert successful",
       count: results.length,

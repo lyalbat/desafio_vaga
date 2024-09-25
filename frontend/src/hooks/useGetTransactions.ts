@@ -4,23 +4,26 @@ import { Transaction } from "../interfaces/transaction";
 
 const ITEMS_PER_PAGE = 2;
 
-export const useGetTransactions = (currentPage: number) => {
+export const useGetAllTransactions = (currentPage: number) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const loadTransactions = async () => {
       try {
+        setLoading(true);
         const data = await fetchAllTransactions(currentPage, ITEMS_PER_PAGE);
         setTransactions(data.transactions);
-        setTotalPages(data.totalPages);
+        setTotalPages(data.pagination.totalPages);
       } catch (error) {
-        console.error('Error fetching transactions:', error);
+        console.error("Error fetching transactions:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    
+
     loadTransactions();
   }, [currentPage]);
-
-  return { transactions, totalPages };
+  return { transactions, totalPages, loading };
 };
